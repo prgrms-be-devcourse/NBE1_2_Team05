@@ -13,3 +13,8 @@ spring:
     database: mysql
 #    hibernate:
 #      ddl-auto: create
+
+naver:
+  client_id: ${NAVER_CLIENT_ID}
+  redirect_uri : ${NAVER_REDIRECT_URL}
+  client_secret: ${NAVER_CLIENT_SECRET}
