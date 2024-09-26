@@ -3,6 +3,7 @@ package org.socialculture.platform.member.oauth.naver.controller;
 import org.socialculture.platform.member.oauth.naver.service.NaverClientService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -25,4 +26,18 @@ public class NaverClientController {
         return naverLoginURL;
     }
 
+    /**
+     * 인가코드로 네이버 사용자 정보 요청
+     * @param code 인가코드
+     * @param state 상태코드
+     */
+    @GetMapping("/naver/callback")
+    public void naverCallBack(@RequestParam String code, @RequestParam String state) {
+        System.out.println("code: " + code);
+        System.out.println("state: " + state);
+
+        //인가코드로 액세스 토큰 요청
+        String naverAccessToken = naverClient.getAccessToken(code, state);
+        System.out.println("access token: " + naverAccessToken);
+    }
 }
