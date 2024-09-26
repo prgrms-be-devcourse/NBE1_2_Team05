@@ -1,5 +1,6 @@
 package org.socialculture.platform.member.oauth.naver.controller;
 
+import org.socialculture.platform.member.oauth.naver.dto.NaverResponseDTO;
 import org.socialculture.platform.member.oauth.naver.service.NaverClientService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,5 +40,9 @@ public class NaverClientController {
         //인가코드로 액세스 토큰 요청
         String naverAccessToken = naverClient.getAccessToken(code, state);
         System.out.println("access token: " + naverAccessToken);
+
+        //액세스 토큰으로 사용자 정보 요청
+        NaverResponseDTO naverMemberInfo = naverClient.getMemberInfo(naverAccessToken);
+        System.out.println(naverMemberInfo);
     }
 }

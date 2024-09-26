@@ -3,6 +3,7 @@ package org.socialculture.platform.member.oauth.naver.service;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.socialculture.platform.member.oauth.naver.dto.NaverResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -51,5 +52,27 @@ public class NaverClientService {
 
         JsonObject asJsonObject = JsonParser.parseString(Objects.requireNonNull(response.getBody())).getAsJsonObject();
         return asJsonObject.get("access_token").getAsString();
+    }
+
+    public NaverResponseDTO getMemberInfo(String accessToken) {
+        String reqUrl = "https://openapi.naver.com/v1/nid/me";
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", "Bearer " + accessToken);
+
+        HttpEntity<MultiValueMap<String, String>> memberInfoRequest = new HttpEntity<>(httpHeaders);
+        ResponseEntity<String> response = restTemplate.exchange(reqUrl, HttpMethod.POST, memberInfoRequest, String.class);
+        System.out.println("response = " + response);
+
+        // JSON 파싱
+        JsonObject jsonObject = JsonParser.parseString(Objects.requireNonNull(response.getBody())).getAsJsonObject();
+        JsonObject responseObject = jsonObject.getAsJsonObject("response");
+
+        String email = responseObject.get("email").getAsString();
+        String name = responseObject.get("name").getAsString();
+
+        // NaverEntity 생성 후 반환
+        return NaverResponseDTO.of(name, email);
     }
 }
