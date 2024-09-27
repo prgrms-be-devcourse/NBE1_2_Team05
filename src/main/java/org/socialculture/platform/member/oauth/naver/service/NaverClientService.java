@@ -16,6 +16,10 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Objects;
 
+/**
+ * 네이버 OAuth 인증을 처리하고 사용자 정보를 조회하는 서비스 클래스
+ * @author 김연수
+ */
 @Service
 public class NaverClientService {
     @Value("${naver.client_id}")
@@ -27,6 +31,10 @@ public class NaverClientService {
     @Value("${naver.client_secret}")
     private String clientSecret;
 
+    /**
+     * 네이버 인가코드 요청 URL을 생성해 제공 (테스트를 위한 코드로, 원래는 프론트 코드임)
+     * @return 인가코드 요청 URL
+     */
     public String getLoginURL() {
         return "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=" +
                 clientId +
@@ -34,6 +42,12 @@ public class NaverClientService {
                 redirectURI;
     }
 
+    /**
+     * 인가코드로 네이버 API에 액세스 토큰 요청
+     * @param code 인가코드
+     * @param state 상태코드
+     * @return 액세스 토큰
+     */
     public String getAccessToken(String code, String state) {
         String reqUrl = "https://nid.naver.com/oauth2.0/token";
 
@@ -48,9 +62,15 @@ public class NaverClientService {
         params.add("state", state);
 
         HttpEntity<MultiValueMap<String, String>> tokenRequest = new HttpEntity<>(params, httpHeaders);
-        ResponseEntity<String> response = restTemplate.exchange(reqUrl, HttpMethod.POST, tokenRequest, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(reqUrl,
+                HttpMethod.POST,
+                tokenRequest,
+                String.class);
 
-        JsonObject asJsonObject = JsonParser.parseString(Objects.requireNonNull(response.getBody())).getAsJsonObject();
+        JsonObject asJsonObject = JsonParser
+                .parseString(Objects.requireNonNull(response.getBody()))
+                .getAsJsonObject();
+
         return asJsonObject.get("access_token").getAsString();
     }
 
@@ -62,11 +82,17 @@ public class NaverClientService {
         httpHeaders.add("Authorization", "Bearer " + accessToken);
 
         HttpEntity<MultiValueMap<String, String>> memberInfoRequest = new HttpEntity<>(httpHeaders);
-        ResponseEntity<String> response = restTemplate.exchange(reqUrl, HttpMethod.POST, memberInfoRequest, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(reqUrl,
+                HttpMethod.POST,
+                memberInfoRequest,
+                String.class);
         System.out.println("response = " + response);
 
         // JSON 파싱
-        JsonObject jsonObject = JsonParser.parseString(Objects.requireNonNull(response.getBody())).getAsJsonObject();
+        JsonObject jsonObject = JsonParser
+                .parseString(Objects.requireNonNull(response.getBody()))
+                .getAsJsonObject();
+
         JsonObject responseObject = jsonObject.getAsJsonObject("response");
 
         String email = responseObject.get("email").getAsString();

@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 네이버 OAuth 인가코드를 받아온 후 콜백을 처리하고, 사용자 정보를 조회하는 컨트롤러 클래스
+ * @author 김연수
+ */
 @RestController
 @RequestMapping("/api/v1/member")
 public class NaverClientController {
