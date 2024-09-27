@@ -74,6 +74,11 @@ public class NaverClientService {
         return asJsonObject.get("access_token").getAsString();
     }
 
+    /**
+     * 액세스 토큰으로 네이버 사용자 정보 요청
+     * @param accessToken
+     * @return 이름, 이메일
+     */
     public NaverResponseDTO getMemberInfo(String accessToken) {
         String reqUrl = "https://openapi.naver.com/v1/nid/me";
 
