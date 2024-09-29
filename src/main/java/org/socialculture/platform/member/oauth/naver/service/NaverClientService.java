@@ -3,7 +3,7 @@ package org.socialculture.platform.member.oauth.naver.service;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.socialculture.platform.member.oauth.naver.dto.NaverResponseDTO;
+import org.socialculture.platform.member.oauth.naver.dto.NaverUserInfoResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -79,7 +79,7 @@ public class NaverClientService {
      * @param accessToken
      * @return 이름, 이메일
      */
-    public NaverResponseDTO getMemberInfo(String accessToken) {
+    public NaverUserInfoResponseDTO getMemberInfo(String accessToken) {
         String reqUrl = "https://openapi.naver.com/v1/nid/me";
 
         RestTemplate restTemplate = new RestTemplate();
@@ -104,6 +104,6 @@ public class NaverClientService {
         String name = responseObject.get("name").getAsString();
 
         // NaverEntity 생성 후 반환
-        return NaverResponseDTO.of(name, email);
+        return NaverUserInfoResponseDTO.of(name, email);
     }
 }
