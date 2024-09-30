@@ -18,8 +18,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/member/naver").permitAll()
-                        .requestMatchers("/api/v1/member/kakao").permitAll()
+                        .requestMatchers("/api/v1/members/naver").permitAll()
+                        .requestMatchers("/api/v1/members/kakao").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

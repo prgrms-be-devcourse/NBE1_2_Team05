@@ -1,5 +1,6 @@
 package org.socialculture.platform.member.oauth.naver.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.socialculture.platform.member.oauth.naver.dto.NaverUserInfoResponseDTO;
 import org.socialculture.platform.member.oauth.naver.service.NaverClientService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author 김연수
  */
 @RestController
+@Slf4j
 @RequestMapping("/api/v1/members")
 public class NaverClientController {
     private final NaverClientService naverClient;
@@ -47,6 +49,7 @@ public class NaverClientController {
 
         //액세스 토큰으로 사용자 정보 요청
         NaverUserInfoResponseDTO naverMemberInfo = naverClient.getMemberInfo(naverAccessToken);
-        System.out.println(naverMemberInfo);
+//        System.out.println(naverMemberInfo);
+        log.info("네이버 사용자 정보 = {}", naverMemberInfo);
     }
 }
