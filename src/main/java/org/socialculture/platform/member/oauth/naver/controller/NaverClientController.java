@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author 김연수
  */
 @RestController
-@RequestMapping("/api/v1/member")
+@RequestMapping("/api/v1/members")
 public class NaverClientController {
     private final NaverClientService naverClient;
 
