@@ -22,14 +22,21 @@ import java.util.Objects;
  */
 @Service
 public class NaverClientService {
-    @Value("${naver.client_id}")
-    private String clientId;
+    private final String clientId;
+    private final String redirectURI;
+    private final String clientSecret;
+    private final RestTemplate restTemplate;
 
-    @Value("${naver.redirect_uri}")
-    private String redirectURI;
-
-    @Value("${naver.client_secret}")
-    private String clientSecret;
+    public NaverClientService(
+            @Value("${naver.client_id}") String clientId,
+            @Value("${naver.redirect_uri}") String redirectURI,
+            @Value("${naver.client_secret}") String clientSecret,
+            RestTemplate restTemplate) {
+        this.clientId = clientId;
+        this.redirectURI = redirectURI;
+        this.clientSecret = clientSecret;
+        this.restTemplate = restTemplate;
+    }
 
     /**
      * 네이버 인가코드 요청 URL을 생성해 제공 (테스트를 위한 코드로, 원래는 프론트 코드임)
@@ -51,7 +58,7 @@ public class NaverClientService {
     public String getAccessToken(String code, String state) {
         String reqUrl = "https://nid.naver.com/oauth2.0/token";
 
-        RestTemplate restTemplate = new RestTemplate();
+//        RestTemplate restTemplate = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -82,7 +89,7 @@ public class NaverClientService {
     public NaverUserInfoResponseDTO getMemberInfo(String accessToken) {
         String reqUrl = "https://openapi.naver.com/v1/nid/me";
 
-        RestTemplate restTemplate = new RestTemplate();
+//        RestTemplate restTemplate = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Authorization", "Bearer " + accessToken);
 
@@ -97,7 +104,6 @@ public class NaverClientService {
         JsonObject jsonObject = JsonParser
                 .parseString(Objects.requireNonNull(response.getBody()))
                 .getAsJsonObject();
-
         JsonObject responseObject = jsonObject.getAsJsonObject("response");
 
         String email = responseObject.get("email").getAsString();
