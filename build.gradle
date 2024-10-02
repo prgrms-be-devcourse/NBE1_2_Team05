@@ -2,6 +2,9 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.3.4'
     id 'io.spring.dependency-management' version '1.1.6'
+
+    // Asciidoctor 플러그인 추가. 이 속에 있는 asciidoctor 태스크가 adoc파일과 스니펫 조합하여 hmtl로 변경
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
 group = 'org.socialculture.platform'
@@ -13,6 +16,17 @@ java {
     }
 }
 
+configurations {
+    //디펜던시 블럭에 asciidoctorExt로 라이브러리를 불러올 수 있도록 선언.
+    //adoc파일에서 스니펫 경로에 있는 스니펫들을 쉽게 불러올 수 있도록 함.
+    asciidoctorExt
+}
+
+ext {
+    //snippetsDir 변수 설정
+    set('snippetsDir', file("build/generated-snippets"))
+}
+
 repositories {
     mavenCentral()
 }
@@ -21,10 +35,22 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // query dsl 추가. spring boot 3 이상에서 :jakarta를 붙여야 오류 발생x
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.mysql:mysql-connector-j'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    testImplementation'org.springframework.restdocs:spring-restdocs-mockmvc' //mockMvc 기반으로 스니펫 뽑을 수 있도록 추가.
+
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     implementation 'com.google.code.gson:gson:2.8.9'
@@ -35,6 +61,31 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
+//querydsl 추가 시작
+def querydslSrcDir = "$projectDir/build/generated"
+clean {
+    delete file(querydslSrcDir)
+}
+
+tasks.withType(JavaCompile) {
+    options.generatedSourceOutputDirectory = file(querydslSrcDir)
+}
+
 tasks.named('test') {
+    outputs.dir snippetsDir // snippetsDir변수 test의 output.dir로 설정.
     useJUnitPlatform()
+    finalizedBy asciidoctor // 이 태스크 끝나고 asciidoctor 태스크 시작
+}
+
+asciidoctor {  //adoc을 html로 변환해주는 설정.
+    inputs.dir snippetsDir // input.dir을 이전에 설정한 snippetDir로 설정
+    configurations 'asciidoctorExt'
+    dependsOn test //asciidoctor 태스크 수행 전 test 태스크 수행하도록 설정
+}
+
+bootJar { //bootJar 태스크 실행시 asciidoctor 태스크가 실행되게 함.
+    dependsOn asciidoctor
+    from("${asciidoctor.outputDir}") {
+        into 'BOOT-INF/classes/static/docs'
+    }
 }
