@@ -107,9 +107,9 @@ public class NaverClientService {
         JsonObject responseObject = jsonObject.getAsJsonObject("response");
 
         String email = responseObject.get("email").getAsString();
-        String name = responseObject.get("name").getAsString();
+        String providerId = responseObject.get("id").getAsString();
 
         // NaverEntity 생성 후 반환
-        return NaverUserInfoResponseDTO.of(name, email);
+        return NaverUserInfoResponseDTO.of(providerId, email);
     }
 }
