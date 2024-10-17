@@ -7,11 +7,12 @@ import org.socialculture.platform.performance.dto.request.PerformanceUpdateReque
 import org.socialculture.platform.performance.dto.response.PerformanceDetailResponse;
 import org.socialculture.platform.performance.dto.response.PerformanceListResponse;
 import org.socialculture.platform.performance.dto.response.PerformanceUpdateResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface PerformanceService {
-    PerformanceRegisterResponse registerPerformance(String email, PerformanceRegisterRequest performanceRegisterRequest);
+    PerformanceRegisterResponse registerPerformance(String email, PerformanceRegisterRequest performanceRegisterRequest, MultipartFile imageFile);
 
     PerformanceListResponse getPerformanceList(Integer page, Integer size, Long categoryId, String search, String email);
 
