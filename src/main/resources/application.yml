@@ -5,14 +5,20 @@ spring:
     username: ${HOME_USERNAME}
     password: ${HOME_PASSWORD}
 
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB   # 파일 1개당 최대 크기
+      max-request-size: 50MB
+
   jpa:
-#    show-sql: true
+    #    show-sql: true
     properties:
       hibernate:
-#        format_sql: true
+    #        format_sql: true
     database: mysql
-#    hibernate:
-#      ddl-auto: create
+  #    hibernate:
+  #      ddl-auto: create
   kakao:
     client_id: ${KAKAO_CLIENT_ID}
     redirect_uri: ${KAKAO_REDIRECT_URI}
@@ -46,13 +52,19 @@ jwt:
   access:
     token:
       expiration: 1800000  # 액세스 토큰 유효 시간 (30분)
-#      expiration: 10000  # 액세스 토큰 유효 시간 (10초)
+  #      expiration: 10000  # 액세스 토큰 유효 시간 (10초)
   refresh:
     token:
       expiration: 604800000  # 리프레시 토큰 유효 시간 (7일)
 
+nginx:
+  server:
+    base:
+      url: ${NGINX_SERVER_BASE_URL}
 
-
-
-
-
+ftp:
+  host: ${FTP_HOST}
+  username: ${FTP_USERNAME}
+  password: ${FTP_PASSWORD}
+  poster-path: ${FTP_POSTER-PATH}
+  intro-path: ${FTP_INTRO-PATH}

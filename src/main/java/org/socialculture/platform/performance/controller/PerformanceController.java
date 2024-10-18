@@ -1,7 +1,6 @@
 package org.socialculture.platform.performance.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.socialculture.platform.global.apiResponse.ApiResponse;
 import org.socialculture.platform.performance.dto.CategoryDto;
 import org.socialculture.platform.performance.dto.request.PerformanceRegisterRequest;
@@ -11,11 +10,14 @@ import org.socialculture.platform.performance.dto.response.PerformanceDetailResp
 import org.socialculture.platform.performance.dto.response.PerformanceListResponse;
 import org.socialculture.platform.performance.dto.response.PerformanceUpdateResponse;
 import org.socialculture.platform.performance.service.PerformanceService;
+import org.socialculture.platform.performance.service.ImageUploadService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -25,19 +27,21 @@ import java.util.List;
 public class PerformanceController {
 
     private final PerformanceService performanceService;
+    private final ImageUploadService imageService;
 
     /**
      * @author Icecoff22
      * @param registerPerformanceRequest
      * @return 200, 등록 완료 메세지
      */
-    @PostMapping
+    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<ApiResponse<PerformanceRegisterResponse>> registerPerformance(
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody PerformanceRegisterRequest registerPerformanceRequest
+            @RequestPart("performanceData") PerformanceRegisterRequest registerPerformanceRequest,
+            @RequestPart(value = "imageFile", required = false) MultipartFile imageFile
     ) {
         PerformanceRegisterResponse performanceRegisterResponse =
-                performanceService.registerPerformance(userDetails.getUsername(), registerPerformanceRequest);
+                performanceService.registerPerformance(userDetails.getUsername(), registerPerformanceRequest, imageFile);
 
         return ApiResponse.onSuccess(
                 HttpStatus.CREATED,
@@ -124,7 +128,7 @@ public class PerformanceController {
     ) {
         return ApiResponse.onSuccess(performanceService.getMyPerformanceList(userDetails.getUsername(), page, size));
     }
-    
+
     @GetMapping("/categories")
     public ResponseEntity<ApiResponse<List<CategoryDto>>> getCategories() {
         return ApiResponse.onSuccess(performanceService.getCategoryList());

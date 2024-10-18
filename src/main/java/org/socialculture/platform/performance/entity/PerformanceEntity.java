@@ -102,4 +102,8 @@ public class PerformanceEntity extends BaseEntity {
     public void updateDeleteAt() {
         this.recordDeletedAt(LocalDateTime.now());
     }
+
+    public void updateImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

@@ -23,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,15 +38,17 @@ public class PerformanceServiceImpl implements PerformanceService {
     private final PerformanceCategoryRepository performanceCategoryRepository;
     private final CategoryRepository categoryRepository;
     private final MemberRepository memberRepository;
-
+    private final ImageUploadService imageUploadService;
     //TODO : 사용자 넣기
     @Transactional
     @Override
-    public PerformanceRegisterResponse registerPerformance(String email, PerformanceRegisterRequest performanceRegisterRequest) {
+    public PerformanceRegisterResponse registerPerformance(String email, PerformanceRegisterRequest performanceRegisterRequest, MultipartFile imageFile) {
         MemberEntity memberEntity = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new GeneralException(MEMBER_NOT_FOUND));
         PerformanceEntity performanceEntity = performanceRegisterRequest.toEntity(performanceRegisterRequest);
         performanceEntity.updateMember(memberEntity);
+        String imageUrl = imageUploadService.uploadFileToFTP(imageFile);
+        performanceEntity.updateImageUrl(imageUrl);
         performanceEntity = performanceRepository.save(performanceEntity);
 
         List<CategoryEntity> categoryEntities = performanceCategorySave(performanceEntity, performanceRegisterRequest.categories());

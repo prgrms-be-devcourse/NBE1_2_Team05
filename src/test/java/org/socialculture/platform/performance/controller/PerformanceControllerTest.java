@@ -23,6 +23,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -100,7 +101,7 @@ public class PerformanceControllerTest {
                         )
                         .build();
 
-        given(performanceService.registerPerformance(email, performanceRegisterRequest))
+        given(performanceService.registerPerformance(email, performanceRegisterRequest, any(MultipartFile.class)))
                 .willReturn(performanceRegisterResponse);
 
         ResultActions result = this.mockMvc.perform(
@@ -212,8 +213,8 @@ public class PerformanceControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         queryParameters(
-                               parameterWithName("page").description("페이지 번호"),
-                               parameterWithName("size").description("페이지 사이즈")
+                                parameterWithName("page").description("페이지 번호"),
+                                parameterWithName("size").description("페이지 사이즈")
                         ),
                         responseFields(
                                 fieldWithPath("isSuccess").description("성공 여부"),

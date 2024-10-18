@@ -93,7 +93,7 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '3.0.5'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
-
+    implementation 'commons-net:commons-net:3.9.0'
 
 }
 
