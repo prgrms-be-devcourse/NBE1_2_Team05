@@ -68,11 +68,8 @@ public class MemberServiceImpl implements MemberService {
 
     /**
      * 소셜 사용자가 가입되어있는지 확인
-     * 가입되어 있지 않으면 회원가입 진행에 필요한 정보들
-     * session에 저장
      *
      * @param socialMemberCheckDto
-     * @param session
      * @return true이면 가입되어있는 사용자, false면 가입되어있지 않는 사용자
      */
     @Override
@@ -98,7 +95,7 @@ public class MemberServiceImpl implements MemberService {
     /**
      * 소셜 사용자의 닉네임 체크 후 회원가입
      *
-     * @param memberInfoDto
+     * @param request
      * @param session
      */
     @Transactional

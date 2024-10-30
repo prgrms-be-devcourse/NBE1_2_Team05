@@ -2,6 +2,7 @@ package org.socialculture.platform.performance.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.socialculture.platform.member.entity.MemberCategoryEntity;
@@ -30,4 +31,12 @@ public class CategoryEntity {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberCategoryEntity> memberCategories = new ArrayList<>();
 
+
+    // 테스트에서 사용
+    @Builder
+    public CategoryEntity(Long categoryId, String nameKr, String nameEn) {
+        this.categoryId = categoryId;
+        this.nameKr = nameKr;
+        this.nameEn = nameEn;
+    }
 }
