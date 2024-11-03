@@ -1,7 +1,6 @@
 package org.socialculture.platform.member.repository;
 
 import org.socialculture.platform.member.entity.MemberCategoryEntity;
-import org.socialculture.platform.member.entity.MemberEntity;
 import org.socialculture.platform.performance.entity.CategoryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

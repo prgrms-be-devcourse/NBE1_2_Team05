@@ -53,7 +53,6 @@ public class MemberServiceImpl implements MemberService {
         memberValidatorService.validatePassword(localRegisterRequest.password());
 
         String encodedPassword = passwordEncoder.encode(localRegisterRequest.password());
-        System.out.println(encodedPassword);
         MemberEntity memberEntity = MemberEntity.builder()
                 .email(localRegisterRequest.email())
                 .password(encodedPassword)  // 암호화된 패스워드 저장
