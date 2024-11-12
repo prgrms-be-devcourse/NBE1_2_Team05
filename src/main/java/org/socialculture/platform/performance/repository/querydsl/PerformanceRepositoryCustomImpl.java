@@ -111,10 +111,12 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
         return Expressions.booleanTemplate(expression, radius);
     }
 
-//    private OrderSpecifier<?> getOrderSpecifiersByDistance(Point location) {
-//        String geoFunction = "ST_Distance_Sphere(coordinate, {0})";
-//        return new OrderSpecifier<>(Order.ASC, Expressions.numberTemplate(Double.class, geoFunction, location));
-//    }
+    private OrderSpecifier<?> getOrderSpecifiersByDistance(Point location) {
+        String geoFunction = "ST_Distance_Sphere(coordinate, ST_GeomFromText('%s', 4326))";
+        String formattedGeoFunction = String.format(geoFunction, location);
+
+        return new OrderSpecifier<>(Order.ASC, Expressions.numberTemplate(Double.class, formattedGeoFunction));
+    }
 
 
 
@@ -401,7 +403,7 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
                 .from(qPerformanceEntity)
                 .leftJoin(qMember).on(qPerformanceEntity.member.eq(qMember))
                 .where(getContainsBooleanExpression(location, radius))
-                //.orderBy(getOrderSpecifiersByDistance(location))
+                .orderBy(getOrderSpecifiersByDistance(location))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
