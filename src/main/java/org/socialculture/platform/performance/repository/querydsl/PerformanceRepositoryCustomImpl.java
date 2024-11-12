@@ -112,9 +112,8 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
     }
 
     private OrderSpecifier<?> getOrderSpecifiersByDistance(Point location) {
-        String pointWKT = String.format("POINT(%s %s)", location.getX(), location.getY()); // 경도, 위도 순서
         String geoFunction = "ST_Distance_Sphere(coordinate, ST_GeomFromText('%s', 4326))";
-        String formattedGeoFunction = String.format(geoFunction, pointWKT);
+        String formattedGeoFunction = String.format(geoFunction, location);
 
         return new OrderSpecifier<>(Order.ASC, Expressions.numberTemplate(Double.class, formattedGeoFunction));
     }
